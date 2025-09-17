@@ -1,0 +1,13 @@
+import "tracing-service/internal/tracing"
+
+func main() {
+    tp, _ := tracing.InitTracer()
+    defer tp.Shutdown()
+
+    mux := http.NewServeMux()
+    mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+        w.Write([]byte("healthy"))
+    })
+
+    log.Fatal(http.ListenAndServe(":8080", tracing.Middleware(mux)))
+}
