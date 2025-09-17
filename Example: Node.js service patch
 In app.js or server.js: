@@ -1,0 +1,16 @@
+// tracing.js
+const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
+const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
+const { trace } = require('@opentelemetry/api');
+
+const provider = new NodeTracerProvider();
+const exporter = new OTLPTraceExporter({
+  url: process.env.TRACING_ENDPOINT || "http://tracing-service:4318/v1/traces"
+});
+provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
+provider.register();
+
+console.log("📡 Tracing enabled for service:", process.env.SERVICE_NAME);
+
+module.exports = trace.getTracer(process.env.SERVICE_NAME || "default-service");
