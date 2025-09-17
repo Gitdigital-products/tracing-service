@@ -1,0 +1,16 @@
+tracing-service/
+├── cmd/
+│   └── main.go
+├── internal/
+│   ├── tracing/
+│   │   ├── tracer.go
+│   │   └── middleware.go
+├── pkg/
+│   └── config/
+│       └── config.go
+├── go.mod
+├── go.sum
+├── Dockerfile
+├── Makefile
+├── README.md
+└── openapi.yaml
