@@ -1,0 +1,25 @@
+package main
+
+import (
+	"log"
+	"net/http"
+	"tracing-service/internal/tracing"
+)
+
+func main() {
+	tracerProvider, err := tracing.InitTracer()
+	if err != nil {
+		log.Fatalf("failed to init tracer: %v", err)
+	}
+	defer tracerProvider.Shutdown()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("tracing-service healthy"))
+	})
+
+	log.Println("🚀 Tracing service running on :8080")
+	if err := http.ListenAndServe(":8080", tracing.Middleware(mux)); err != nil {
+		log.Fatal(err)
+	}
+}
